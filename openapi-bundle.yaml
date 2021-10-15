@@ -1,0 +1,306 @@
+info:
+  title: OpenAPI definition parking permits
+  version: v1
+openapi: 3.0.3
+
+paths:
+  /{environment}/parkingpermit/addresses:
+    get:
+      operationId: getAddresses
+      parameters:
+        - in: path
+          name: environment
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          content:
+            '*/*':
+              schema:
+                items:
+                  $ref: '#/components/schemas/ParkingPermitAddresses'
+                type: array
+          description: OK
+      tags:
+        - parking-permit-webservice
+    post:
+      operationId: addAddress
+      parameters:
+        - in: path
+          name: environment
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddAddress'
+        required: true
+      responses:
+        '200':
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ParkingPermitAddresses'
+          description: OK
+      tags:
+        - parking-permit-webservice
+  /{environment}/parkingpermit/questions/{id}:
+    put:
+      operationId: addQuestions
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: environment
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ParkingPermitQuestions'
+        required: true
+      responses:
+        '200':
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ParkingPermitRequests'
+          description: OK
+      tags:
+        - parking-permit-webservice
+  /{environment}/parkingpermit/request:
+    post:
+      operationId: storeRequest
+      parameters:
+        - in: path
+          name: environment
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ParkingPermitRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            '*/*':
+              schema:
+                type: string
+          description: OK
+      tags:
+        - parking-permit-webservice
+  /{environment}/parkingpermit/request/{id}:
+    get:
+      operationId: getRequestById
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: environment
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ParkingPermitRequests'
+          description: OK
+      tags:
+        - parking-permit-webservice
+  /{environment}/parkingpermit/requests:
+    get:
+      operationId: getRequests
+      parameters:
+        - in: path
+          name: environment
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          content:
+            '*/*':
+              schema:
+                items:
+                  $ref: '#/components/schemas/ParkingPermitRequests'
+                type: array
+          description: OK
+      tags:
+        - parking-permit-webservice
+  /{environment}/parkingpermit/required:
+    get:
+      operationId: isParkingPermitRequired
+      parameters:
+        - in: query
+          name: zipcode
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: environment
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          content:
+            '*/*':
+              schema:
+                type: boolean
+          description: OK
+      tags:
+        - parking-permit-webservice
+        
+servers:
+  - description: API root url
+    url: http://localhost:8080
+    
+components:
+  schemas:
+    AddAddress:
+      properties:
+        zipcode:
+          type: string
+      type: object
+    Addresses:
+      properties:
+        city:
+          type: string
+        date:
+          format: date
+          type: string
+        streetname:
+          type: string
+        zipcode:
+          type: string
+      type: object
+    ParkingPermitAddresses:
+      properties:
+        environment:
+          type: string
+        id:
+          format: int64
+          type: integer
+        zipcode:
+          type: string
+      type: object
+    ParkingPermitQuestions:
+      properties:
+        hasLicense:
+          type: boolean
+        hasRegistrationCertificate:
+          type: boolean
+        licensePlate:
+          type: string
+        payment:
+          type: string
+        situation:
+          type: string
+        vehicle:
+          type: string
+      type: object
+    ParkingPermitRequest:
+      properties:
+        applicationDate:
+          format: date
+          type: string
+        bsn:
+          type: string
+        city:
+          type: string
+        startingDate:
+          format: date
+          type: string
+        streetname:
+          type: string
+        zipcode:
+          type: string
+      type: object
+    ParkingPermitRequests:
+      properties:
+        applicationDate:
+          format: date
+          type: string
+        bsn:
+          type: string
+        city:
+          type: string
+        environment:
+          type: string
+        hasLicense:
+          type: boolean
+        hasRegistrationCertificate:
+          type: boolean
+        id:
+          format: int64
+          type: integer
+        licensePlate:
+          type: string
+        payment:
+          type: string
+        situation:
+          type: string
+        startingDate:
+          format: date
+          type: string
+        streetname:
+          type: string
+        vehicle:
+          type: string
+        zipcode:
+          type: string
+      type: object
+    PermissionRequest:
+      properties:
+        address:
+          type: string
+        bsn:
+          type: string
+        city:
+          type: string
+        email:
+          type: string
+        name:
+          type: string
+        telephoneNumber:
+          type: string
+      type: object
+    UpdatePermissionRequest:
+      properties:
+        address:
+          type: string
+        addresses:
+          items:
+            $ref: '#/components/schemas/Addresses'
+          type: array
+        city:
+          type: string
+        email:
+          type: string
+        name:
+          type: string
+        status:
+          enum:
+            - IN_PROGRESS
+            - OK
+            - DENIED
+          type: string
+        telephoneNumber:
+          type: string
+      type: object
